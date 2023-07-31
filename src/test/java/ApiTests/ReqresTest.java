@@ -27,6 +27,7 @@ public class ReqresTest {
 
         List<String> avatars = users.stream().map(UserData::getAvatar).collect(Collectors.toList());
         List<String> ids = users.stream().map(x->x.getId().toString()).collect(Collectors.toList());
+
         for (int i = 0; i< avatars.size(); i++ ){
             Assert.assertTrue(avatars.get(i).contains(ids.get(i)));
         }
