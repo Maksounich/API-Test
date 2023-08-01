@@ -1,6 +1,7 @@
 package api;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserData {
@@ -11,7 +12,7 @@ public class UserData {
     private String first_name;
     private String last_name;
     private String avatar;
-
+    @JsonCreator
     public UserData(@JsonProperty("id") int id,
                     @JsonProperty("email") String email,
                     @JsonProperty("first_name") String first_name,
