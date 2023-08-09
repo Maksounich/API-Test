@@ -14,27 +14,7 @@ import java.util.stream.IntStream;
 import static io.restassured.RestAssured.given;
 
 public class ReqresTest {
-    private RequestUtils requestUtils;
     public final static String URL = "https://reqres.in/";
-    @Test
-    public void checkAvaterAndIdTest(){
-        List<UserData> users = given()
-                .when()
-                .contentType(ContentType.JSON)
-                .get(URL+"api/users?page=2")
-                .then().log().all()
-                .extract().body().jsonPath().getList("data", UserData.class);
-        users.forEach(x-> Assert.assertTrue(x.getAvatar().contains(x.getId().toString())));
-        Assert.assertTrue(users.stream().allMatch(x->x.getEmail().endsWith("@reqres.in")));
-
-        List<String> avatars = users.stream().map(UserData::getAvatar).collect(Collectors.toList());
-        List<String> ids = users.stream().map(x->x.getId().toString()).collect(Collectors.toList());
-
-        for (int i = 0; i< avatars.size(); i++ ){
-            Assert.assertTrue(avatars.get(i).contains(ids.get(i)));
-        }
-    }
-
     @Test
     public void checkAvaterAndIdTest2(){
         Spec.installSpecification(Spec.requestSpec(URL), Spec.responseSpecUnique(200));
@@ -59,7 +39,7 @@ public class ReqresTest {
         Integer id = 4;
         String token = "QpwL5tke4Pnpja7X4";
         Register user = new Register("eve.holt@reqres.in", "pistol");
-        SuccessReg successReg = (SuccessReg) RequestUtils.sendPostRequest("api/register", user, SuccessReg.class);
+        SuccessReg successReg = RequestUtils.sendPostRequest("api/register", user, SuccessReg.class);
 
         Assert.assertEquals(id, successReg.getId());
         Assert.assertEquals(token, successReg.getToken());
@@ -69,7 +49,7 @@ public class ReqresTest {
     public void failedRegTest(){
         Spec.installSpecification(Spec.requestSpec(URL), Spec.responseSpecUnique(400));
         Register user = new Register("eve.holt@reqres.in", "");
-        FailedReg failedReg = (FailedReg) RequestUtils.sendPostRequest("api/register", user, FailedReg.class);
+        FailedReg failedReg = RequestUtils.sendPostRequest("api/register", user, FailedReg.class);
 
         Assert.assertEquals(failedReg.getError(), "Missing password");
     }
@@ -90,6 +70,6 @@ public class ReqresTest {
         Spec.installSpecification(Spec.requestSpec(URL), Spec.responseSpecUnique(204));
         Response response = RequestUtils.sendDeleteRequest("api/users/2");
 
-        Assert.assertEquals(204, response.getStatusCode());
+        Assert.assertEquals(response.getStatusCode(), 204);
     }
 }
